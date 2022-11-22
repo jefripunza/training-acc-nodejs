@@ -1,0 +1,42 @@
+{
+  "name": "training-acc",
+  "version": "1.0.0",
+  "main": "./src/index.js",
+  "license": "MIT",
+  "scripts": {
+    "dev": "npx nodemon",
+    "example:data": "node ./src/example-data",
+    "test": "mocha ./src/tests/*.test.js --exit",
+    "reset": "npx cross-env rm -rf ./node_modules && yarn",
+    "clean": "npx cross-env rm -rf dist debug.log index.js package-lock.json yarn.lock",
+    "build": "npx yarn clean && npx ncc build ./src/index.js --no-cache --minify --transpile-only",
+    "start": "node ./dist/index.js",
+    "push": "npx yarn build && git add . && git commit -m \"deploying...\" && git push -u origin main"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^16.0.1",
+    "express": "^4.18.1",
+    "helmet": "^5.1.0",
+    "jsonwebtoken": "^8.5.1",
+    "moment-timezone": "^0.5.34",
+    "mysql2": "^2.3.3",
+    "socket.io": "^4.5.1",
+    "swagger-ui-express": "^4.4.0",
+    "typeorm": "^0.3.7"
+  },
+  "devDependencies": {
+    "@vercel/ncc": "^0.34.0",
+    "basic-auth": "^2.0.1",
+    "chai": "^4.3.6",
+    "cross-env": "^7.0.3",
+    "debug": "^4.3.4",
+    "depd": "^2.0.0",
+    "mocha": "^10.0.0",
+    "nodemon": "^2.0.19",
+    "on-finished": "^2.4.1",
+    "on-headers": "^1.0.2",
+    "supertest": "^6.2.4",
+    "yarn": "^1.22.19"
+  }
+}

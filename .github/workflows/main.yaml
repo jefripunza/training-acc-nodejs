@@ -1,0 +1,36 @@
+on: push
+name: 🚀 Deploy:NodeJS
+jobs:
+  web-deploy:
+    if: ${{ github.ref == 'refs/heads/main' }}
+    name: 🎉 Deploy to https://dexa.jefriherditriyanto.com/
+    runs-on: ubuntu-latest
+    steps:
+      - name: 🚚 Get latest code
+        uses: actions/checkout@v2
+
+      - name: 🚫 Remove Meta Files & Folders
+        run: |
+          rm -rf .github
+          rm .gitignore
+          rm dexa-training.postman_collection.json
+          rm package-lock.json || true
+          rm README.md
+          rm soal_test.js
+          rm yarn.lock || true
+
+      - name: 💯 Configuration for Production
+        run: |
+          sed -i 's/DB_SYNC=true/DB_SYNC=false/g' .env
+          sed -i 's/database_host/localhost/g' .env
+
+      - name: 💾 Sync files to Server 📡
+        uses: SamKirkland/FTP-Deploy-Action@4.3.0
+        with:
+          server: ftp.jefriherditriyanto.com
+          username: ${{secrets.ftp_email}}
+          password: ${{secrets.ftp_password}}
+          exclude: |
+            **/.git*
+            **/.git*/**
+            **/node_modules/**

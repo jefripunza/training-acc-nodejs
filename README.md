@@ -87,7 +87,7 @@ yarn build
 
 
 
-## Log (NodeJS+WebSocket)
+<!-- ## Log (NodeJS+WebSocket)
 [url_log]:     https://acc.jefriherditriyanto.com/log     "log system"
 
 > [https://acc.jefriherditriyanto.com/log][url_log]
@@ -99,4 +99,4 @@ yarn build
 
 > [https://acc.jefriherditriyanto.com/swagger][url_swagger]
 
----
+--- -->

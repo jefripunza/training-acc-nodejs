@@ -1,0 +1,496 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "version": "1.0.0",
+    "title": "Training - Astra Credit Companies",
+    "description": "project ini menggunakan NodeJS",
+    "termsOfService": "http://swagger.io/terms/",
+    "contact": {
+      "name": "Jefri Herdi Triyanto",
+      "email": "jefriherditriyanto@gmail.com"
+    },
+    "license": {
+      "name": "MIT",
+      "url": "https://opensource.org/licenses/MIT"
+    }
+  },
+  "host": "acc.jefriherditriyanto.com",
+  "basePath": "/",
+  "tags": [
+    {
+      "name": "Auth",
+      "description": "kebutuhan dalam autentikasi"
+    },
+    {
+      "name": "User",
+      "description": "API untuk management user"
+    }
+  ],
+  "schemes": ["https"],
+  "consumes": ["application/json"],
+  "produces": ["application/json"],
+  "paths": {
+    "/auth/login": {
+      "post": {
+        "summary": "validasi data dan mendapatkan token",
+        "tags": ["Auth"],
+        "description": "validasi data dan mendapatkan token baru",
+        "parameters": [
+          {
+            "name": "input",
+            "in": "body",
+            "schema": {
+              "$ref": "#/request/login"
+            }
+          }
+        ],
+        "produces": ["application/json"],
+        "responses": {
+          "200": {
+            "description": "user berhasil login",
+            "schema": {
+              "$ref": "#/response/login"
+            }
+          },
+          "400": {
+            "description": "email / password salah",
+            "schema": {
+              "$ref": "#/response/only_message"
+            }
+          },
+          "500": {
+            "description": "error server",
+            "schema": {
+              "$ref": "#/response/only_message"
+            }
+          }
+        }
+      }
+    },
+    "/auth/refresh-token": {
+      "get": {
+        "security": [{ "Bearer": [] }],
+        "summary": "memperbarui token baru jika token lama masih aktif",
+        "tags": ["Auth"],
+        "description": "memperbarui token baru jika token lama masih aktif",
+        "parameters": [],
+        "produces": ["application/json"],
+        "responses": {
+          "200": {
+            "description": "berhasil refresh token",
+            "schema": {
+              "$ref": "#/response/login"
+            }
+          },
+          "401": {
+            "description": "token tidak valid",
+            "schema": {
+              "$ref": "#/response/only_message"
+            }
+          },
+          "403": {
+            "description": "token bearer dibutuhkan",
+            "schema": {
+              "$ref": "#/response/only_message"
+            }
+          },
+          "500": {
+            "description": "error server",
+            "schema": {
+              "$ref": "#/response/only_message"
+            }
+          }
+        }
+      }
+    },
+    "/api/user": {
+      "post": {
+        "summary": "menambah user",
+        "tags": ["User"],
+        "description": "menambah user baru",
+        "parameters": [
+          {
+            "name": "input",
+            "in": "body",
+            "schema": {
+              "$ref": "#/request/insert"
+            }
+          }
+        ],
+        "produces": ["application/json"],
+        "responses": {
+          "200": {
+            "description": "user berhasil ditambah",
+            "schema": {
+              "$ref": "#/response/only_message"
+            }
+          },
+          "400": {
+            "description": "dob bukan format date, email bukan format email, gender tidak tersedia, marital_status tidak tersedia, phone_number sudah ada, email sudah ada",
+            "schema": {
+              "$ref": "#/response/only_message"
+            }
+          },
+          "405": {
+            "description": "wajib mengisi body (name, gender, dob, phone_number, email, password, religion, marital_status, address)",
+            "schema": {
+              "$ref": "#/response/only_message"
+            }
+          },
+          "500": {
+            "description": "error server",
+            "schema": {
+              "$ref": "#/response/only_message"
+            }
+          }
+        }
+      },
+      "patch": {
+        "security": [{ "Bearer": [] }],
+        "summary": "mengubah user",
+        "tags": ["User"],
+        "description": "mengubah user yang sudah ada didalam database",
+        "parameters": [
+          {
+            "name": "update",
+            "in": "body",
+            "schema": {
+              "$ref": "#/request/update"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "berhasil merubah data user",
+            "schema": {
+              "$ref": "#/response/only_message"
+            }
+          },
+          "400": {
+            "description": "dob bukan format date, email bukan format email, gender tidak tersedia, marital_status tidak tersedia, user tidak ada, email sudah ada",
+            "schema": {
+              "$ref": "#/response/only_message"
+            }
+          },
+          "405": {
+            "description": "id dibutuhkan di body, wajib mengisi salah satu body (name, gender, dob, phone_number, email, password, religion, marital_status, address)",
+            "schema": {
+              "$ref": "#/response/only_message"
+            }
+          },
+          "500": {
+            "description": "user tidak terupdate, error server",
+            "schema": {
+              "$ref": "#/response/only_message"
+            }
+          }
+        }
+      },
+      "delete": {
+        "security": [{ "Bearer": [] }],
+        "summary": "menghapus user",
+        "tags": ["User"],
+        "description": "menghapus user yang ada didalam database",
+        "parameters": [
+          {
+            "name": "delete",
+            "in": "body",
+            "schema": {
+              "$ref": "#/request/delete"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "user berhasil dihapus",
+            "schema": {
+              "$ref": "#/response/only_message"
+            }
+          },
+          "500": {
+            "description": "error server",
+            "schema": {
+              "$ref": "#/response/only_message"
+            }
+          }
+        }
+      }
+    },
+    "/api/user/{show}/{page}/{order_by}/{keyword}": {
+      "parameters": [
+        {
+          "name": "show",
+          "in": "path",
+          "required": true,
+          "description": "menampilkan berapa banyak data",
+          "type": "integer"
+        },
+        {
+          "name": "page",
+          "in": "path",
+          "required": true,
+          "description": "halaman berapa yang ingin ditampilkan",
+          "type": "integer"
+        },
+        {
+          "name": "order_by",
+          "in": "path",
+          "required": true,
+          "description": "urutan list data (asc, desc)",
+          "type": "string"
+        },
+        {
+          "name": "keyword",
+          "in": "path",
+          "required": true,
+          "description": "kata pencarian",
+          "type": "string"
+        }
+      ],
+      "get": {
+        "security": [{ "Bearer": [] }],
+        "tags": ["User"],
+        "summary": "tampilkan data user (pagination)",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/response/pagination"
+            }
+          },
+          "401": {
+            "description": "token bearer tidak valid",
+            "schema": {
+              "$ref": "#/response/only_message"
+            }
+          },
+          "403": {
+            "description": "token bearer dibutuhkan",
+            "schema": {
+              "$ref": "#/response/only_message"
+            }
+          },
+          "500": {
+            "description": "error server",
+            "schema": {
+              "$ref": "#/response/only_message"
+            }
+          }
+        }
+      }
+    }
+  },
+  "request": {
+    "login": {
+      "required": ["email", "password"],
+      "properties": {
+        "email": {
+          "type": "string"
+        },
+        "password": {
+          "type": "string"
+        }
+      }
+    },
+    "insert": {
+      "required": [
+        "name",
+        "gender",
+        "dob",
+        "phone_number",
+        "email",
+        "password",
+        "religion",
+        "marital_status",
+        "address"
+      ],
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "gender": {
+          "type": "string",
+          "enum": ["pria", "wanita"]
+        },
+        "dob": {
+          "type": "string"
+        },
+        "phone_number": {
+          "type": "string"
+        },
+        "email": {
+          "type": "string"
+        },
+        "password": {
+          "type": "string"
+        },
+        "religion": {
+          "type": "string"
+        },
+        "marital_status": {
+          "type": "string",
+          "enum": ["nikah", "belum nikah"]
+        },
+        "address": {
+          "type": "string"
+        }
+      }
+    },
+    "update": {
+      "required": [
+        "id",
+        "name",
+        "gender",
+        "dob",
+        "phone_number",
+        "email",
+        "password",
+        "religion",
+        "marital_status",
+        "address"
+      ],
+      "properties": {
+        "id": {
+          "type": "integer",
+          "uniqueItems": true
+        },
+        "name": {
+          "type": "string"
+        },
+        "gender": {
+          "type": "string",
+          "enum": ["pria", "wanita"]
+        },
+        "dob": {
+          "type": "string"
+        },
+        "phone_number": {
+          "type": "string"
+        },
+        "email": {
+          "type": "string"
+        },
+        "password": {
+          "type": "string"
+        },
+        "religion": {
+          "type": "string"
+        },
+        "marital_status": {
+          "type": "string",
+          "enum": ["nikah", "belum nikah"]
+        },
+        "address": {
+          "type": "string"
+        }
+      }
+    },
+    "delete": {
+      "required": ["id"],
+      "properties": {
+        "id": {
+          "type": "integer",
+          "uniqueItems": true
+        }
+      }
+    }
+  },
+  "response": {
+    "login": {
+      "required": ["token", "expired"],
+      "properties": {
+        "token": {
+          "type": "string"
+        },
+        "expired": {
+          "type": "string"
+        }
+      }
+    },
+    "pagination": {
+      "required": [
+        "data",
+        "totalData",
+        "currentPage",
+        "lastPage",
+        "nextPage",
+        "prevPage"
+      ],
+      "properties": {
+        "data": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "number",
+                "uniqueItems": true
+              },
+              "create_date": {
+                "type": "string"
+              },
+              "phone_number": {
+                "type": "string"
+              },
+              "email": {
+                "type": "string"
+              },
+              "password": {
+                "type": "string"
+              },
+              "name": {
+                "type": "string"
+              },
+              "dob": {
+                "type": "string"
+              },
+              "address": {
+                "type": "string"
+              },
+              "religion": {
+                "type": "string"
+              },
+              "gender": {
+                "type": "string"
+              },
+              "marital_status": {
+                "type": "string"
+              }
+            }
+          }
+        },
+        "totalData": {
+          "type": "number"
+        },
+        "currentPage": {
+          "type": "number"
+        },
+        "lastPage": {
+          "type": "number"
+        },
+        "nextPage": {
+          "type": "number"
+        },
+        "prevPage": {
+          "type": "number"
+        }
+      }
+    },
+    "only_message": {
+      "required": ["message"],
+      "properties": {
+        "message": {
+          "type": "string"
+        }
+      }
+    }
+  },
+  "securityDefinitions": {
+    "Bearer": {
+      "type": "apiKey",
+      "name": "Authorization",
+      "in": "header",
+      "description": "Enter your bearer token in the format **Bearer &lt;token>**"
+    }
+  }
+}
