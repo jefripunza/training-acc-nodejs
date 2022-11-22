@@ -1,5 +1,7 @@
 # training-acc-nodejs
 
+router > controller > service > repository > entity
+
 ## Perkenalan Teknologi
 
 dikarenakan saya menggunakan **NodeJS**, maka yang harus dipersiapkan terlebih dahulu adalah :

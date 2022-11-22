@@ -24,6 +24,7 @@ exports.search = async (keyword, detail = false) => {
     keyword = Model.escape(keyword);
     query += ` WHERE brands.name LIKE '%${keyword}%'`;
     query += ` OR cars.model LIKE '%${keyword}%'`;
+    query += ` OR cars.color LIKE '%${keyword}%'`;
   }
   const result = await Model.customQuery(query);
   return result.map((v) => {
